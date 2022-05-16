@@ -1,6 +1,7 @@
 #ifndef NODE_H_
 #define NODE_H_
 
+#include <GL/gl.h>
 #include <GL/glut.h>
 #include <string>
 using namespace std;
@@ -12,21 +13,17 @@ class Node {
         float w;
         float h;
 
-        enum color {
-            white,
-            red,
-            green,
-            black
-        };
+        float *color;
 
     public:
         Node() {
         }
-        Node(float x, float y, float w, float h) {
+        Node(float x, float y, float w, float h, GLfloat color[]) {
             this->x = x;
             this->y = y;
             this->w = w;
             this->h = h;
+            this->color = color;
         }
 
         void drawNode() {
@@ -40,7 +37,7 @@ class Node {
                 glVertex2f(x, y + h);
             glEnd();
 
-            glColor3f(1.0, 1.0, 1.0);
+            glColor3fv(color);
             glBegin(GL_POINTS);
                 for (int i = x; i < x + w - 1; i++) {
                     for (int j = y+1; j < y + h; j++) {
