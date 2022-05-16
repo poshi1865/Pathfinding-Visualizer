@@ -10,6 +10,7 @@
 #define HEIGHT 840
 
 void render(void);
+void resize(int width, int height);
 void handleMouseMotion(int x, int y);
 void handleMouseClick(int button, int state, int x, int y);
 void update(int a);
@@ -19,16 +20,16 @@ int mouseClick ;
 
 int mouseX;
 int mouseY;
-bool mouseHold = false;
+bool mouseDown = false;
 
 const int nodeSideLength = 30;
 const int numberOfNodes = (WIDTH / nodeSideLength) * (HEIGHT / nodeSideLength) + 1;
 
-Node n[numberOfNodes];
+Node node[numberOfNodes];
 
 void init() {
     printf("%d", numberOfNodes);
-    n[0] = Node(1, 1, nodeSideLength, nodeSideLength, COLOR_WHITE);
+    node[0] = Node(1, 1, nodeSideLength, nodeSideLength, COLOR_WHITE);
     int x = 1;
     int y = 1;
     for (int i = 1; i < numberOfNodes; i++) {
@@ -36,7 +37,7 @@ void init() {
             x = 1;
             y += nodeSideLength;
         }
-        n[i] = Node(x, y, nodeSideLength, nodeSideLength, COLOR_WHITE);
+        node[i] = Node(x, y, nodeSideLength, nodeSideLength, COLOR_WHITE);
         x += nodeSideLength;
     }
 }
@@ -47,6 +48,7 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
 
     glutInitWindowSize(WIDTH, HEIGHT);
+    glutReshapeFunc(resize);
     glutCreateWindow("Pathfinder");
 
     glutDisplayFunc(render);
@@ -70,7 +72,7 @@ void render(void) {
     glColor3f(0.0, 0.0, 0.0);
 
     for (int i = 0; i < numberOfNodes; i++) {
-        n[i].drawNode();
+        node[i].drawNode();
     }
     
     glutSwapBuffers();
@@ -78,9 +80,12 @@ void render(void) {
 void update(int a) {
     glutTimerFunc(1000 / 60, update, 0);
     
-    //if (mouseHold) {
-        printf("%d, %d\n", mouseX, mouseY);
-   // }
+    for (int i = 0; i < numberOfNodes; i++) {
+        if (mouseX >= node[i].x && mouseX <= node[i].x + node[i].w) {
+            if (HEIGHT - mouseY >= node[i].y && HEIGHT - mouseY <= node[i].y + node[i].h) 
+                node[i].color = COLOR_CYAN;
+        }
+    }
 
     glutPostRedisplay();
 }
@@ -88,10 +93,10 @@ void update(int a) {
 void handleMouseMotion(int x, int y) {
     //Left click
     if (mouseClick == 1) {
-        printf("LEFT\n");
+        //printf("LEFT\n");
     }
     if (mouseClick == 2) {
-        printf("RIGHT\n");
+        //printf("RIGHT\n");
     }
 
     mouseX = x;
@@ -101,12 +106,18 @@ void handleMouseMotion(int x, int y) {
 void handleMouseClick(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         mouseClick = 1;
+        mouseDown = true;
     }
     else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
         mouseClick = 2;
+        mouseDown = true;
     }
     if (state == GLUT_UP) {
         mouseClick = 0;
+        mouseDown = false;
     }
 }
 
+void resize(int widht, int height) {
+    glutReshapeWindow(WIDTH, HEIGHT);
+}
