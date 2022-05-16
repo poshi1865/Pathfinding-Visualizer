@@ -4,24 +4,31 @@
 #include <GL/glu.h>
 
 #include "../include/Node.h"
+#include "../include/colors.h"
 
 #define WIDTH 840
 #define HEIGHT 840
 
 void render(void);
-void handleMouse(int button, int state, int x, int y);
+void handleMouseMotion(int x, int y);
+void handleMouseClick(int button, int state, int x, int y);
 void update(int a);
 void init();
 
+int mouseClick ;
+
+int mouseX;
+int mouseY;
+bool mouseHold = false;
+
 const int nodeSideLength = 30;
-const int numberOfNodes = (WIDTH / nodeSideLength) * (HEIGHT / nodeSideLength);
+const int numberOfNodes = (WIDTH / nodeSideLength) * (HEIGHT / nodeSideLength) + 1;
 
 Node n[numberOfNodes];
 
-int mouseHold = 0;
-
 void init() {
-    n[0] = Node(1, 1, nodeSideLength, nodeSideLength);
+    printf("%d", numberOfNodes);
+    n[0] = Node(1, 1, nodeSideLength, nodeSideLength, COLOR_WHITE);
     int x = 1;
     int y = 1;
     for (int i = 1; i < numberOfNodes; i++) {
@@ -29,7 +36,7 @@ void init() {
             x = 1;
             y += nodeSideLength;
         }
-        n[i] = Node(x, y, nodeSideLength, nodeSideLength);
+        n[i] = Node(x, y, nodeSideLength, nodeSideLength, COLOR_WHITE);
         x += nodeSideLength;
     }
 }
@@ -43,7 +50,8 @@ int main(int argc, char** argv) {
     glutCreateWindow("Pathfinder");
 
     glutDisplayFunc(render);
-    glutMouseFunc(handleMouse);
+    glutMotionFunc(handleMouseMotion);
+    glutMouseFunc(handleMouseClick);
     update(0);
 
     glClearColor(1.0, 1.0, 1.0, 0.0);
@@ -69,18 +77,36 @@ void render(void) {
 }
 void update(int a) {
     glutTimerFunc(1000 / 60, update, 0);
+    
+    //if (mouseHold) {
+        printf("%d, %d\n", mouseX, mouseY);
+   // }
+
     glutPostRedisplay();
 }
 
-void handleMouse(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        mouseHold = 1;
+void handleMouseMotion(int x, int y) {
+    //Left click
+    if (mouseClick == 1) {
+        printf("LEFT\n");
     }
-    if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-        mouseHold = 1;
+    if (mouseClick == 2) {
+        printf("RIGHT\n");
+    }
+
+    mouseX = x;
+    mouseY = y;
+}
+
+void handleMouseClick(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        mouseClick = 1;
+    }
+    else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+        mouseClick = 2;
     }
     if (state == GLUT_UP) {
-        mouseHold = 0;
+        mouseClick = 0;
     }
 }
 
