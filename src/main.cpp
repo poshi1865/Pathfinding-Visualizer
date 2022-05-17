@@ -10,6 +10,7 @@ void render(void);
 void resize(int width, int height);
 void handleMouseMotion(int x, int y);
 void handleMouseClick(int button, int state, int x, int y);
+void handleKeyboardPress(unsigned char key, int x, int y);
 void update(int a);
 void init();
 
@@ -52,6 +53,7 @@ int main(int argc, char** argv) {
     glutPassiveMotionFunc(handleMouseMotion);
     glutMotionFunc(handleMouseMotion);
     glutMouseFunc(handleMouseClick);
+    glutKeyboardFunc(handleKeyboardPress);
     update(0);
 
     glClearColor(1.0, 1.0, 1.0, 0.0);
@@ -79,7 +81,6 @@ void update(int a) {
     glutTimerFunc(1000 / 120, update, 0);
     
     if (mouseDown) {
-        cout << "X: "<< mouseX << " Y: " << mouseY << endl;
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY)) {
                 if (mouseClick == 1) {
@@ -123,6 +124,37 @@ void handleMouseClick(int button, int state, int x, int y) {
     }
 }
 
-void resize(int widht, int height) {
+void handleKeyboardPress(unsigned char key, int x, int y) {
+    if (key == 'r') {
+        for (int i = 0; i < numberOfNodes; i++) {
+            node[i].color = COLOR_WHITE;
+        }
+    }
+}
+
+void resize(int width, int height) {
     glutReshapeWindow(WIDTH, HEIGHT);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
