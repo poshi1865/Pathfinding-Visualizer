@@ -6,9 +6,6 @@
 #include "../include/Node.h"
 #include "../include/colors.h"
 
-#define WIDTH 840
-#define HEIGHT 840
-
 void render(void);
 void resize(int width, int height);
 void handleMouseMotion(int x, int y);
@@ -52,6 +49,7 @@ int main(int argc, char** argv) {
     glutCreateWindow("Pathfinder");
 
     glutDisplayFunc(render);
+    glutPassiveMotionFunc(handleMouseMotion);
     glutMotionFunc(handleMouseMotion);
     glutMouseFunc(handleMouseClick);
     update(0);
@@ -78,15 +76,23 @@ void render(void) {
     glutSwapBuffers();
 }
 void update(int a) {
-    glutTimerFunc(1000 / 60, update, 0);
+    glutTimerFunc(1000 / 120, update, 0);
     
-    for (int i = 0; i < numberOfNodes; i++) {
-        if (mouseX >= node[i].x && mouseX <= node[i].x + node[i].w) {
-            if (HEIGHT - mouseY >= node[i].y && HEIGHT - mouseY <= node[i].y + node[i].h) 
-                node[i].color = COLOR_CYAN;
+    if (mouseDown) {
+        cout << "X: "<< mouseX << " Y: " << mouseY << endl;
+        for (int i = 0; i < numberOfNodes; i++) {
+            if (node[i].hasInside(mouseX, mouseY)) {
+                if (mouseClick == 1) {
+                    node[i].color = COLOR_RED;
+                }
+                else if (mouseClick == 2) {
+                    node[i].color = COLOR_WHITE;
+                }
+            }
         }
     }
 
+    //Repaint the display
     glutPostRedisplay();
 }
 
@@ -98,7 +104,6 @@ void handleMouseMotion(int x, int y) {
     if (mouseClick == 2) {
         //printf("RIGHT\n");
     }
-
     mouseX = x;
     mouseY = y;
 }

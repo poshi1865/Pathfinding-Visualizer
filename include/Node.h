@@ -4,6 +4,8 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <string>
+#include "screen.h"
+
 using namespace std;
 
 class Node {
@@ -45,6 +47,13 @@ class Node {
                     }
                 }
             glEnd();
+        }
+        bool hasInside(int x, int y) {
+            if (x >= this->x && x <= this->x + this->w) {
+                if (HEIGHT - y >= this->y && HEIGHT - y <= this->y + this->h) 
+                    return true;
+            }
+            return false;
         }
 };
 
