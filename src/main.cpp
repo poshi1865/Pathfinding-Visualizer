@@ -18,6 +18,7 @@ int mouseClick ;
 
 int mouseX;
 int mouseY;
+int keyPressed;
 bool mouseDown = false;
 
 const int nodeSideLength = 30;
@@ -77,6 +78,7 @@ void render(void) {
     
     glutSwapBuffers();
 }
+
 void update(int a) {
     glutTimerFunc(1000 / 120, update, 0);
     
@@ -84,7 +86,7 @@ void update(int a) {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY)) {
                 if (mouseClick == 1) {
-                    node[i].color = COLOR_RED;
+                    node[i].color = COLOR_BLACK;
                 }
                 else if (mouseClick == 2) {
                     node[i].color = COLOR_WHITE;
@@ -98,13 +100,6 @@ void update(int a) {
 }
 
 void handleMouseMotion(int x, int y) {
-    //Left click
-    if (mouseClick == 1) {
-        //printf("LEFT\n");
-    }
-    if (mouseClick == 2) {
-        //printf("RIGHT\n");
-    }
     mouseX = x;
     mouseY = y;
 }
@@ -125,9 +120,26 @@ void handleMouseClick(int button, int state, int x, int y) {
 }
 
 void handleKeyboardPress(unsigned char key, int x, int y) {
-    if (key == 'r') {
+    keyPressed = key;
+    if (keyPressed == 'r') {
         for (int i = 0; i < numberOfNodes; i++) {
             node[i].color = COLOR_WHITE;
+        }
+    }
+    else if (keyPressed == 's') {
+        for (int i = 0; i < numberOfNodes; i++) {
+            if (node[i].hasInside(mouseX, mouseY)) {
+                node[i].color = COLOR_CYAN;
+                break;
+            }
+        }
+    }
+    else if (keyPressed == 'd') {
+        for (int i = 0; i < numberOfNodes; i++) {
+            if (node[i].hasInside(mouseX, mouseY)) {
+                node[i].color = COLOR_GREEN;
+                break;
+            }
         }
     }
 }
