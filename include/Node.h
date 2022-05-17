@@ -5,11 +5,12 @@
 #include <GL/glut.h>
 #include <string>
 #include "screen.h"
+#include "colors.h"
 
 using namespace std;
 
 class Node {
-    public:
+    private:
         float x;
         float y;
         float w;
@@ -17,15 +18,18 @@ class Node {
 
         float *color;
 
+        string type;
+
     public:
         Node() {
         }
-        Node(float x, float y, float w, float h, GLfloat color[]) {
+        Node(float x, float y, float w, float h, string type) {
             this->x = x;
             this->y = y;
             this->w = w;
             this->h = h;
-            this->color = color;
+            this->type = type;
+            setType(type);
         }
 
         void drawNode() {
@@ -54,6 +58,28 @@ class Node {
                     return true;
             }
             return false;
+        }
+        void setColor(GLfloat color[]) {
+            this->color = color;
+        }
+
+        void setType(string type) {
+            if (type == "normal" ||  type == "wall" || type == "source" || type == "destination") {
+                this->type = type;
+
+                if (this->type == "normal") {
+                    this->color = COLOR_WHITE;
+                }
+                else if (this->type == "wall") {
+                    this->color = COLOR_BLACK;
+                }
+                else if (this->type == "source") {
+                    this->color = COLOR_BLUE;
+                }
+                else if (this->type == "destination") {
+                    this->color = COLOR_GREEN;
+                }
+            }
         }
 };
 

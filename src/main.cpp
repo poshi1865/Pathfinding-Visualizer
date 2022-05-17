@@ -27,8 +27,7 @@ const int numberOfNodes = (WIDTH / nodeSideLength) * (HEIGHT / nodeSideLength) +
 Node node[numberOfNodes];
 
 void init() {
-    printf("%d", numberOfNodes);
-    node[0] = Node(1, 1, nodeSideLength, nodeSideLength, COLOR_WHITE);
+    node[0] = Node(1, 1, nodeSideLength, nodeSideLength, "normal");
     int x = 1;
     int y = 1;
     for (int i = 1; i < numberOfNodes; i++) {
@@ -36,7 +35,7 @@ void init() {
             x = 1;
             y += nodeSideLength;
         }
-        node[i] = Node(x, y, nodeSideLength, nodeSideLength, COLOR_WHITE);
+        node[i] = Node(x, y, nodeSideLength, nodeSideLength, "normal");
         x += nodeSideLength;
     }
 }
@@ -86,10 +85,10 @@ void update(int a) {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY)) {
                 if (mouseClick == 1) {
-                    node[i].color = COLOR_BLACK;
+                    node[i].setType("wall");
                 }
                 else if (mouseClick == 2) {
-                    node[i].color = COLOR_WHITE;
+                    node[i].setType("normal");
                 }
             }
         }
@@ -123,13 +122,13 @@ void handleKeyboardPress(unsigned char key, int x, int y) {
     keyPressed = key;
     if (keyPressed == 'r') {
         for (int i = 0; i < numberOfNodes; i++) {
-            node[i].color = COLOR_WHITE;
+            node[i].setType("normal");
         }
     }
     else if (keyPressed == 's') {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY)) {
-                node[i].color = COLOR_CYAN;
+                node[i].setType("source");
                 break;
             }
         }
@@ -137,7 +136,7 @@ void handleKeyboardPress(unsigned char key, int x, int y) {
     else if (keyPressed == 'd') {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY)) {
-                node[i].color = COLOR_GREEN;
+                node[i].setType("destination");
                 break;
             }
         }
