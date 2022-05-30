@@ -4,7 +4,6 @@
 #include <GL/glu.h>
 
 #include "../include/Node.h"
-#include "../include/colors.h"
 
 void render(void);
 void resize(int width, int height);
@@ -38,32 +37,6 @@ void init() {
         node[i] = Node(x, y, nodeSideLength, nodeSideLength, "normal");
         x += nodeSideLength;
     }
-}
-
-int main(int argc, char** argv) {
-
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
-
-    glutInitWindowSize(WIDTH, HEIGHT);
-    glutReshapeFunc(resize);
-    glutCreateWindow("Pathfinder");
-
-    glutDisplayFunc(render);
-    glutPassiveMotionFunc(handleMouseMotion);
-    glutMotionFunc(handleMouseMotion);
-    glutMouseFunc(handleMouseClick);
-    glutKeyboardFunc(handleKeyboardPress);
-    update(0);
-
-    glClearColor(1.0, 1.0, 1.0, 0.0);
-    gluOrtho2D(0.0, WIDTH, 0.0, HEIGHT);
-
-    init();
-
-    glutMainLoop();
-
-    return 0;
 }
 
 void render(void) {
@@ -125,6 +98,7 @@ void handleKeyboardPress(unsigned char key, int x, int y) {
             node[i].setType("normal");
         }
     }
+
     else if (keyPressed == 's') {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY)) {
@@ -133,6 +107,7 @@ void handleKeyboardPress(unsigned char key, int x, int y) {
             }
         }
     }
+
     else if (keyPressed == 'd') {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY)) {
@@ -147,11 +122,31 @@ void resize(int width, int height) {
     glutReshapeWindow(WIDTH, HEIGHT);
 }
 
+int main(int argc, char** argv) {
 
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
 
+    glutInitWindowSize(WIDTH, HEIGHT);
+    glutReshapeFunc(resize);
+    glutCreateWindow("Pathfinder");
 
+    glutDisplayFunc(render);
+    glutPassiveMotionFunc(handleMouseMotion);
+    glutMotionFunc(handleMouseMotion);
+    glutMouseFunc(handleMouseClick);
+    glutKeyboardFunc(handleKeyboardPress);
+    update(0);
 
+    glClearColor(1.0, 1.0, 1.0, 0.0);
+    gluOrtho2D(0.0, WIDTH, 0.0, HEIGHT);
 
+    init();
+
+    glutMainLoop();
+
+    return 0;
+}
 
 
 

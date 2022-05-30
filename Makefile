@@ -1,2 +1,2 @@
-main : src/main.cpp include/Node.h include/screen.h
-	g++ src/main.cpp -lGL -lglut -lGLU -o main
+main : src/main.cpp src/Node.cpp include/screen.h include/colors.h 
+	g++ src/main.cpp src/Node.cpp include/screen.h -lGL -lglut -lGLU -o main
