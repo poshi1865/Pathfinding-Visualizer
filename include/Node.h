@@ -6,7 +6,10 @@
 #include <string>
 #include "screen.h"
 
-using namespace std;
+#define NODE_NORMAL 1
+#define NODE_WALL 2
+#define NODE_SOURCE 3
+#define NODE_DESTINATION 4
 
 class Node {
     private:
@@ -17,18 +20,18 @@ class Node {
 
         float *color;
 
-        string type;
+        int type;
     public:
         Node();
-        Node(float x, float y, float w, float h, string type); 
+        Node(float x, float y, float w, float h, int type); 
 
         void drawNode(); 
 
         bool hasInside(int x, int y);
 
-        void setType(string type); 
+        void setType(int type); 
 
-        string getType();
+        int getType();
 
         bool isSame(Node* a); 
 };

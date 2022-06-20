@@ -8,7 +8,7 @@
 Node::Node() {
 }
 
-Node::Node(float x, float y, float w, float h, string type) {
+Node::Node(float x, float y, float w, float h, int type) {
     this->x = x;
     this->y = y;
     this->w = w;
@@ -46,26 +46,26 @@ bool Node::hasInside(int x, int y) {
     return false;
 }
 
-void Node::setType(string type) {
-    if (type == "normal" ||  type == "wall" || type == "source" || type == "destination") {
+void Node::setType(int type) {
+    if (type == NODE_NORMAL ||  type == NODE_WALL || type == NODE_SOURCE || type == NODE_DESTINATION) {
         this->type = type;
 
-        if (this->type == "normal") {
+        if (this->type == NODE_NORMAL) {
             this->color = COLOR_WHITE;
         }
-        else if (this->type == "wall") {
+        else if (this->type == NODE_WALL) {
             this->color = COLOR_BLACK;
         }
-        else if (this->type == "source") {
+        else if (this->type == NODE_SOURCE) {
             this->color = COLOR_BLUE;
         }
-        else if (this->type == "destination") {
+        else if (this->type == NODE_DESTINATION) {
             this->color = COLOR_GREEN;
         }
     }
 }
 
-string Node::getType() {
+int Node::getType() {
     return this->type;
 }
 

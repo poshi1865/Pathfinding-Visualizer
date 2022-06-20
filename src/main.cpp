@@ -6,6 +6,9 @@
 #include "../include/Node.h"
 #include "../include/SpriteSheet.h"
 
+#define MOUSE_LEFT 1
+#define MOUSE_RIGHT 2
+
 void render(void);
 void resize(int width, int height);
 void handleMouseMotion(int x, int y);
@@ -26,6 +29,7 @@ const int numberOfNodes = (WIDTH / nodeSideLength) * (HEIGHT / nodeSideLength) +
 
 Node node[numberOfNodes];
 
+//This function creates objects for all of the nodes on the grid
 void init() {
     node[0] = Node(1, 1, nodeSideLength, nodeSideLength, "normal");
     int x = 1;
@@ -40,6 +44,7 @@ void init() {
     }
 }
 
+//The function for rendering objects on the screen
 void render(void) {
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -52,16 +57,17 @@ void render(void) {
     glutSwapBuffers();
 }
 
+//Updates different objects
 void update(int a) {
     glutTimerFunc(1000 / 120, update, 0);
     
     if (mouseDown) {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY)) {
-                if (mouseClick == 1) {
+                if (mouseClick == MOUSE_LEFT) {
                     node[i].setType("wall");
                 }
-                else if (mouseClick == 2) {
+                else if (mouseClick == MOUSE_RIGHT) {
                     node[i].setType("normal");
                 }
             }
@@ -72,18 +78,20 @@ void update(int a) {
     glutPostRedisplay();
 }
 
+//assigns the current mouse position to global variables mouseX and mouseY
 void handleMouseMotion(int x, int y) {
     mouseX = x;
     mouseY = y;
 }
 
+//assigns values to global variables mouseClick and mouseDown
 void handleMouseClick(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        mouseClick = 1;
+        mouseClick = MOUSE_LEFT;
         mouseDown = true;
     }
     else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-        mouseClick = 2;
+        mouseClick = MOUSE_RIGHT;
         mouseDown = true;
     }
     if (state == GLUT_UP) {
@@ -92,6 +100,7 @@ void handleMouseClick(int button, int state, int x, int y) {
     }
 }
 
+//Function for handling key presses
 void handleKeyboardPress(unsigned char key, int x, int y) {
     keyPressed = key;
     if (keyPressed == 'r') {
@@ -124,11 +133,9 @@ void resize(int width, int height) {
 }
 
 void tempAnimation() {
-
 }
 
 int main(int argc, char** argv) {
-    //TEST CODE
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
