@@ -4,6 +4,7 @@
 #include <GL/glu.h>
 
 #include "../include/Node.h"
+#include "../include/SpriteSheet.h"
 
 void render(void);
 void resize(int width, int height);
@@ -122,7 +123,12 @@ void resize(int width, int height) {
     glutReshapeWindow(WIDTH, HEIGHT);
 }
 
+void tempAnimation() {
+
+}
+
 int main(int argc, char** argv) {
+    //TEST CODE
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
