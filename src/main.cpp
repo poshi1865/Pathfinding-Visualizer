@@ -31,7 +31,7 @@ Node node[numberOfNodes];
 
 //This function creates objects for all of the nodes on the grid
 void init() {
-    node[0] = Node(1, 1, nodeSideLength, nodeSideLength, "normal");
+    node[0] = Node(1, 1, nodeSideLength, nodeSideLength, NODE_NORMAL);
     int x = 1;
     int y = 1;
     for (int i = 1; i < numberOfNodes; i++) {
@@ -39,7 +39,7 @@ void init() {
             x = 1;
             y += nodeSideLength;
         }
-        node[i] = Node(x, y, nodeSideLength, nodeSideLength, "normal");
+        node[i] = Node(x, y, nodeSideLength, nodeSideLength, NODE_NORMAL);
         x += nodeSideLength;
     }
 }
@@ -65,10 +65,10 @@ void update(int a) {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY)) {
                 if (mouseClick == MOUSE_LEFT) {
-                    node[i].setType("wall");
+                    node[i].setType(NODE_WALL);
                 }
                 else if (mouseClick == MOUSE_RIGHT) {
-                    node[i].setType("normal");
+                    node[i].setType(NODE_NORMAL);
                 }
             }
         }
@@ -105,14 +105,14 @@ void handleKeyboardPress(unsigned char key, int x, int y) {
     keyPressed = key;
     if (keyPressed == 'r') {
         for (int i = 0; i < numberOfNodes; i++) {
-            node[i].setType("normal");
+            node[i].setType(NODE_NORMAL);
         }
     }
 
     else if (keyPressed == 's') {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY)) {
-                node[i].setType("source");
+                node[i].setType(NODE_SOURCE);
                 break;
             }
         }
@@ -121,7 +121,7 @@ void handleKeyboardPress(unsigned char key, int x, int y) {
     else if (keyPressed == 'd') {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY)) {
-                node[i].setType("destination");
+                node[i].setType(NODE_DESTINATION);
                 break;
             }
         }
