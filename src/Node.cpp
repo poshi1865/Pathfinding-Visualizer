@@ -8,12 +8,13 @@
 Node::Node() {
 }
 
-Node::Node(float x, float y, float w, float h, int type) {
+Node::Node(float x, float y, float w, float h, int type, int cellNumber) {
     this->x = x;
     this->y = y;
     this->w = w;
     this->h = h;
     this->type = type;
+    this->cellNumber = cellNumber;
     setType(type);
 }
 
@@ -47,7 +48,7 @@ bool Node::hasInside(int x, int y) {
 }
 
 void Node::setType(int type) {
-    if (type == NODE_NORMAL ||  type == NODE_WALL || type == NODE_SOURCE || type == NODE_DESTINATION) {
+    if (type == NODE_NORMAL ||  type == NODE_WALL || type == NODE_SOURCE || type == NODE_DESTINATION || type == NODE_VISITED) {
         this->type = type;
 
         if (this->type == NODE_NORMAL) {
@@ -62,6 +63,9 @@ void Node::setType(int type) {
         else if (this->type == NODE_DESTINATION) {
             this->color = COLOR_GREEN;
         }
+        else if (this->type == NODE_VISITED) {
+            this->color = COLOR_CYAN;
+        }
     }
 }
 
@@ -69,8 +73,42 @@ int Node::getType() {
     return this->type;
 }
 
+int Node::getCellNumber() {
+    return this->cellNumber;
+}
+
+int* Node::getAdjacentNodeIndex() {
+    int n = this->getCellNumber() + 1;
+    int* ar = (int*)malloc(sizeof(int) * 4);
+    int* result = ar;
+
+    *ar = n;
+
+
+    ar++;
+    int temp = this->getCellNumber() - 1;
+    *ar = temp;
+
+    ar++;
+    temp = this->getCellNumber() + 32;
+    *ar = temp;
+
+    ar++;
+    temp = this->getCellNumber() - 32;
+    *ar = temp;
+
+    return result;
+}
+
 bool Node::isSame(Node* a) {
     if (this->x == a->x && this->y == a->y) {
+        return true;
+    }
+    return false;
+}
+
+bool Node::isVisited() {
+    if (this->type == NODE_VISITED) {
         return true;
     }
     return false;

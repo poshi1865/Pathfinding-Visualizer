@@ -10,6 +10,7 @@
 #define NODE_WALL 2
 #define NODE_SOURCE 3
 #define NODE_DESTINATION 4
+#define NODE_VISITED 5
 
 class Node {
     private:
@@ -21,9 +22,12 @@ class Node {
         float *color;
 
         int type;
+
+        int cellNumber;
+
     public:
         Node();
-        Node(float x, float y, float w, float h, int type); 
+        Node(float x, float y, float w, float h, int type, int cellNumber); 
 
         void drawNode(); 
 
@@ -34,6 +38,12 @@ class Node {
         int getType();
 
         bool isSame(Node* a); 
+
+        int getCellNumber();
+
+        bool isVisited();
+
+        int* getAdjacentNodeIndex();
 };
 
 #endif
