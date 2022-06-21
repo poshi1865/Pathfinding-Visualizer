@@ -46,14 +46,14 @@ bool Node::hasInside(int x, int y) {
 }
 
 void Node::setType(int type) {
-    if (type == NODE_NORMAL ||  type == NODE_WALL || type == NODE_SOURCE || type == NODE_DESTINATION || type == NODE_VISITED) {
+    if (type == NODE_NORMAL ||  type == NODE_WALL || type == NODE_SOURCE || type == NODE_DESTINATION || type == NODE_VISITED || type == NODE_BOUNDARY) {
         this->type = type;
 
         if (this->type == NODE_NORMAL) {
             this->color = COLOR_WHITE;
         }
         else if (this->type == NODE_WALL) {
-            this->color = COLOR_BLACK;
+            this->color = COLOR_BROWN;
         }
         else if (this->type == NODE_SOURCE) {
             this->color = COLOR_BLUE;
@@ -63,6 +63,9 @@ void Node::setType(int type) {
         }
         else if (this->type == NODE_VISITED) {
             this->color = COLOR_CYAN;
+        }
+        else if (this->type == NODE_BOUNDARY) {
+            this->color = COLOR_BLACK;
         }
     }
 }
@@ -114,6 +117,22 @@ bool Node::isSame(Node* a) {
 
 bool Node::isVisited() {
     if (this->type == NODE_VISITED) {
+        return true;
+    }
+    return false;
+}
+
+bool Node::isBoundary() {
+    if (this->getCellNumber() >= 1 && this->getCellNumber() <= 32) {
+        return true;
+    }
+    else if (this->getCellNumber() >= 993 && this->getCellNumber() <= 1024) {
+        return true;
+    }
+    else if (this->getCellNumber() % 32 == 1) {
+        return true;
+    }
+    else if (this->getCellNumber() % 32 == 0) {
         return true;
     }
     return false;

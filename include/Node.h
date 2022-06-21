@@ -11,6 +11,7 @@
 #define NODE_SOURCE 3
 #define NODE_DESTINATION 4
 #define NODE_VISITED 5
+#define NODE_BOUNDARY 6
 
 class Node {
     private:
@@ -40,6 +41,7 @@ class Node {
         int* getAdjacentNodeIndex();
         void setDistanceFromSource(int n); 
         int getDistanceFromSource();
+        bool isBoundary();
 };
 
 #endif

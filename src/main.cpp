@@ -14,6 +14,7 @@
 #define KEY_D 'd'
 #define KEY_R 'r'
 #define KEY_A 'a'
+#define KEY_T 't'
 
 void render(void);
 void resize(int width, int height);
@@ -41,7 +42,9 @@ Node* sourceNode;
 Node* destinationNode;
 //This function creates objects for all of the nodes on the grid
 void init() {
-    node[0] = Node(1, 1, nodeSideLength, nodeSideLength, NODE_NORMAL, 0);
+    //sourceNode = (Node*) malloc(sizeof(Node));
+    //destinationNode = (Node*) malloc(sizeof(Node));
+    //node[0] = Node(0, 0, nodeSideLength, nodeSideLength, NODE_NORMAL, 0);
     int x = 1;
     int y = 1;
     for (int i = 1; i < numberOfNodes; i++) {
@@ -50,6 +53,11 @@ void init() {
             y += nodeSideLength;
         }
         node[i] = Node(x, y, nodeSideLength, nodeSideLength, NODE_NORMAL, i);
+
+        if (node[i].isBoundary()) {
+            node[i].setType(NODE_BOUNDARY);
+        }
+
         x += nodeSideLength;
     }
 }
@@ -61,7 +69,7 @@ void render(void) {
 
     glColor3f(0.0, 0.0, 0.0);
 
-    for (int i = 0; i < numberOfNodes; i++) {
+    for (int i = 1; i < numberOfNodes; i++) {
         node[i].drawNode();
     }
     
@@ -76,8 +84,9 @@ void update(int a) {
     //which node has to be changed
     if (mouseDown) {
         for (int i = 0; i < numberOfNodes; i++) {
-            if (node[i].hasInside(mouseX, mouseY)) {
+            if (node[i].hasInside(mouseX, mouseY) && !node[i].isBoundary()) {
                 if (mouseClick == MOUSE_LEFT) {
+                    printf("%d\n", i);
                     node[i].setType(NODE_WALL);
                 }
                 else if (mouseClick == MOUSE_RIGHT) {
@@ -117,15 +126,21 @@ void handleMouseClick(int button, int state, int x, int y) {
 void algo() {
     if (sourceNode == nullptr || destinationNode == nullptr) return;
 
-    int *adjacentNodeI = sourceNode->getAdjacentNodeIndex();
-    for (int i = 0; i < 4; i++) {
-        //node[*adjacentNodeI].setType(NODE_VISITED);
-        if (node[*adjacentNodeI].getType() != NODE_WALL) {
-            node[*adjacentNodeI].setType(NODE_VISITED);
+    int newSourceIndex;
+    while (!destinationNode->isVisited()) {
+        int *adjacentNodeIndex = sourceNode->getAdjacentNodeIndex();
+        for (int i = 0; i < 4; i++) {
+            //if (*adjacentNodeIndex < 1 || *adjacentNodeIndex > 1024) return;
+            //node[*adjacentNodeI].setType(NODE_VISITED);
+            if (node[*adjacentNodeIndex].getType() == NODE_NORMAL) {
+                node[*adjacentNodeIndex].setType(NODE_VISITED);
+            }
+            newSourceIndex = *adjacentNodeIndex;
+            adjacentNodeIndex++;
         }
-        adjacentNodeI++;
+        sourceNode = &node[newSourceIndex];
+        render();
     }
-
     //while (currNode != destinationNode) {
     //    for (int i = 0; i < numberOfNodes; i++) {
     //        if (abs(currNode->getCellNumber() - node[i].getCellNumber()) == 32) { 
@@ -145,14 +160,16 @@ void handleKeyboardPress(unsigned char key, int x, int y) {
     if (key == KEY_R) {
         sourceNode = nullptr;
         destinationNode = nullptr;
-        for (int i = 0; i < numberOfNodes; i++) {
-            node[i].setType(NODE_NORMAL);
+        for (int i = 1; i < numberOfNodes; i++) {
+            if (!node[i].isBoundary()) {
+                node[i].setType(NODE_NORMAL);
+            }
         }
     }
 
     else if (key == KEY_S) {
-        for (int i = 0; i < numberOfNodes; i++) {
-            if (node[i].hasInside(mouseX, mouseY)) {
+        for (int i = 1; i < numberOfNodes; i++) {
+            if (node[i].hasInside(mouseX, mouseY) && !node[i].isBoundary()) {
                 node[i].setType(NODE_SOURCE);
                 sourceNode = &node[i];
                 break;
@@ -161,8 +178,8 @@ void handleKeyboardPress(unsigned char key, int x, int y) {
     }
 
     else if (key == KEY_D) {
-        for (int i = 0; i < numberOfNodes; i++) {
-            if (node[i].hasInside(mouseX, mouseY)) {
+        for (int i = 1; i < numberOfNodes; i++) {
+            if (node[i].hasInside(mouseX, mouseY) && !node[i].isBoundary()) {
                 node[i].setType(NODE_DESTINATION);
                 destinationNode = &node[i];
                 break;
@@ -172,6 +189,10 @@ void handleKeyboardPress(unsigned char key, int x, int y) {
     
     if (key == KEY_A) {
         algo();
+    }
+    
+    if (key == KEY_T) {
+        printf("T PRESSED\n");
     }
 }
 
