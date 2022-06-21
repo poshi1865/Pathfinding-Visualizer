@@ -1,9 +1,7 @@
-
 #include "../include/Node.h"
 #include <string>
 #include "../include/screen.h"
 #include "../include/colors.h"
-
 
 Node::Node() {
 }
@@ -84,7 +82,6 @@ int* Node::getAdjacentNodeIndex() {
 
     *ar = n;
 
-
     ar++;
     int temp = this->getCellNumber() - 1;
     *ar = temp;
@@ -100,6 +97,14 @@ int* Node::getAdjacentNodeIndex() {
     return result;
 }
 
+int Node::getDistanceFromSource() {
+    return this->distanceFromSource;
+}
+
+void Node::setDistanceFromSource(int n) {
+    this->distanceFromSource = n;
+}
+
 bool Node::isSame(Node* a) {
     if (this->x == a->x && this->y == a->y) {
         return true;
@@ -113,4 +118,3 @@ bool Node::isVisited() {
     }
     return false;
 }
-

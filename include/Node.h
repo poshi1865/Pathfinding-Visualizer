@@ -24,26 +24,22 @@ class Node {
         int type;
 
         int cellNumber;
+        int distanceFromSource;
 
     public:
         Node();
         Node(float x, float y, float w, float h, int type, int cellNumber); 
 
         void drawNode(); 
-
         bool hasInside(int x, int y);
-
         void setType(int type); 
-
         int getType();
-
         bool isSame(Node* a); 
-
         int getCellNumber();
-
         bool isVisited();
-
         int* getAdjacentNodeIndex();
+        void setDistanceFromSource(int n); 
+        int getDistanceFromSource();
 };
 
 #endif

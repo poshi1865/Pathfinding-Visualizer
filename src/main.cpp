@@ -79,7 +79,6 @@ void update(int a) {
             if (node[i].hasInside(mouseX, mouseY)) {
                 if (mouseClick == MOUSE_LEFT) {
                     node[i].setType(NODE_WALL);
-                    printf("%d\n", i);
                 }
                 else if (mouseClick == MOUSE_RIGHT) {
                     node[i].setType(NODE_NORMAL);
@@ -118,12 +117,13 @@ void handleMouseClick(int button, int state, int x, int y) {
 void algo() {
     if (sourceNode == nullptr || destinationNode == nullptr) return;
 
-    Node* currNode = sourceNode;
-    int *adjacentNode = sourceNode->getAdjacentNodeIndex();
-    printf("Adjacent nodes to source: \n");
+    int *adjacentNodeI = sourceNode->getAdjacentNodeIndex();
     for (int i = 0; i < 4; i++) {
-        printf("%d\n", *adjacentNode);
-        adjacentNode++;
+        //node[*adjacentNodeI].setType(NODE_VISITED);
+        if (node[*adjacentNodeI].getType() != NODE_WALL) {
+            node[*adjacentNodeI].setType(NODE_VISITED);
+        }
+        adjacentNodeI++;
     }
 
     //while (currNode != destinationNode) {
