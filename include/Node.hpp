@@ -4,7 +4,7 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <string>
-#include "screen.h"
+#include "screen.hpp"
 
 #define NODE_NORMAL 1
 #define NODE_WALL 2

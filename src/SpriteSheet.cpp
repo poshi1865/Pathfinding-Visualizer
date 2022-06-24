@@ -1,7 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <GL/glut.h>
-#include "../include/SpriteSheet.h"
+#include "../include/SpriteSheet.hpp"
 #include "../stb_image.h"
 
 SpriteSheet::SpriteSheet() {

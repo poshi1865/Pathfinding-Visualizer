@@ -6,8 +6,8 @@
 #include <GL/glu.h>
 #include <algorithm>
 
-#include "../include/Node.h"
-#include "../include/SpriteSheet.h"
+#include "../include/Node.hpp"
+#include "../include/SpriteSheet.hpp"
 
 #define MOUSE_LEFT 1
 #define MOUSE_RIGHT 2
@@ -90,7 +90,7 @@ void update(int a) {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY) && !node[i].isBoundary()) {
                 if (mouseClick == MOUSE_LEFT) {
-                    printf("%d\n", i);
+                    //printf("%d\n", i);
                     node[i].setType(NODE_WALL);
                 }
                 else if (mouseClick == MOUSE_RIGHT) {
@@ -222,7 +222,7 @@ void algo() {
                         }
 
                         shortestPathIndex = indexOfNodeSmallestDistance;
-                        printf("SPI: %d\n", shortestPathIndex);
+                        //printf("SPI: %d\n", shortestPathIndex);
 
                         //set type of node with smallest distance value as trace
                         node[shortestPathIndex].setType(NODE_TRACE);

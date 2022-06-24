@@ -1,7 +1,7 @@
-#include "../include/Node.h"
+#include "../include/Node.hpp"
 #include <string>
-#include "../include/screen.h"
-#include "../include/colors.h"
+#include "../include/screen.hpp"
+#include "../include/colors.hpp"
 
 Node::Node() {
 }
