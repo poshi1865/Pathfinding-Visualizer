@@ -93,11 +93,11 @@ int* Node::getAdjacentNodeIndex() {
     *ar = temp;
 
     ar++;
-    temp = this->getCellNumber() + 32;
+    temp = this->getCellNumber() + 42;
     *ar = temp;
 
     ar++;
-    temp = this->getCellNumber() - 32;
+    temp = this->getCellNumber() - 42;
     *ar = temp;
 
     return result;
@@ -126,16 +126,16 @@ bool Node::isVisited() {
 }
 
 bool Node::isBoundary() {
-    if (this->getCellNumber() >= 1 && this->getCellNumber() <= 32) {
+    if (this->getCellNumber() >= 1 && this->getCellNumber() <= 42) {
         return true;
     }
-    else if (this->getCellNumber() >= 993 && this->getCellNumber() <= 1024) {
+    else if (this->getCellNumber() >= 1135 && this->getCellNumber() <= 1176) {
         return true;
     }
-    else if (this->getCellNumber() % 32 == 1) {
+    else if (this->getCellNumber() % 42 == 1) {
         return true;
     }
-    else if (this->getCellNumber() % 32 == 0) {
+    else if (this->getCellNumber() % 42 == 0) {
         return true;
     }
     return false;

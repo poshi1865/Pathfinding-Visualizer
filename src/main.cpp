@@ -1,8 +1,10 @@
 #include <iostream>
+#include <cstring>
 #include <unistd.h>
 #include <stdio.h>
 #include <queue>
 #include <GL/glut.h>
+#include <GL/freeglut.h>
 #include <GL/glu.h>
 #include <algorithm>
 
@@ -28,7 +30,7 @@ void handleKeyboardPress(unsigned char key, int x, int y);
 void update(int a);
 void init();
 
-//THERE IS A DIFFERENCE OF 32 b/w node and its adjacent node on top and bottom
+//THERE IS A DIFFERENCE OF 42 b/w node and its adjacent node on top and bottom
 
 //MOUSE VARIABLES
 int mouseClick ;
@@ -38,7 +40,7 @@ bool mouseDown = false;
 
 //NODE VARIABLES
 const int nodeSideLength = 30;
-const int numberOfNodes = (WIDTH / nodeSideLength) * (HEIGHT / nodeSideLength) + 1;
+const int numberOfNodes = (WIDTH / nodeSideLength) * ((HEIGHT - 100) / nodeSideLength) + 1;
 Node node[numberOfNodes];
 
 //Variables for the algorithm
@@ -68,8 +70,39 @@ void init() {
 
 //The function for rendering objects on the screen
 //This function just draws all the nodes 
+char shortestDistanceString[200];
 void render(void) {
     glClear(GL_COLOR_BUFFER_BIT);
+
+    //DRAWING STRINGS
+    glColor3f(0.0f, 0.3f, 1.0f);
+
+    glRasterPos2f(WIDTH - 950, HEIGHT - 30);
+    const unsigned char* title = reinterpret_cast<const unsigned char *>("PATHFINDING ALGORITHM VISUALIZER");
+    glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, title);
+
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glRasterPos2f(WIDTH - 950, HEIGHT - 105);
+    const unsigned char* shortest = reinterpret_cast<const unsigned char *>(shortestDistanceString);
+    glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, shortest);
+                    
+    glColor3f(0.0f, 0.3f, 1.0f);
+    
+    glRasterPos2f(WIDTH - 950, HEIGHT - 65);
+    const unsigned char* aToRun = reinterpret_cast<const unsigned char *>("A to run breadth first search");
+    glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, aToRun);
+
+    glRasterPos2f(WIDTH - 350, HEIGHT - 30);
+    const unsigned char* sToPlaceSource = reinterpret_cast<const unsigned char *>("S to place source node");
+    glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, sToPlaceSource);
+
+    glRasterPos2f(WIDTH - 350, HEIGHT - 65);
+    const unsigned char* dToPlaceDestination = reinterpret_cast<const unsigned char *>("D to place destination node");
+    glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, dToPlaceDestination);
+
+    glRasterPos2f(WIDTH - 350, HEIGHT - 100);
+    const unsigned char* rToReset = reinterpret_cast<const unsigned char *>("R to reset");
+    glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, rToReset);
 
     glColor3f(0.0, 0.0, 0.0);
 
@@ -90,7 +123,7 @@ void update(int a) {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY) && !node[i].isBoundary()) {
                 if (mouseClick == MOUSE_LEFT) {
-                    //printf("%d\n", i);
+                    printf("%d\n", i);
                     node[i].setType(NODE_WALL);
                 }
                 else if (mouseClick == MOUSE_RIGHT) {
@@ -178,8 +211,10 @@ void algo() {
                 //Check if destination node has been reached 
                 if (node[*adjacentOfTempIndex].getCellNumber() == destinationNode->getCellNumber()) {
                     printf("Shortest distance from source to destination: %d\n", node[*adjacentOfTempIndex].getDistanceFromSource());
+                    glColor3f(0.0f, 0.3f, 1.0f);
                     
-                    //TRACING BACK THE PATH
+                    sprintf(shortestDistanceString, "Shortest distance from source to destination: %d", node[*adjacentOfTempIndex].getDistanceFromSource());
+                    //************TRACING BACK THE PATH*****************
                     int shortestPathIndex = *adjacentOfTempIndex;
                     for (int i = 0; i < node[*adjacentOfTempIndex].getDistanceFromSource() - 1; i++) {
 
@@ -242,7 +277,7 @@ void algo() {
             free(startOfAdjacentIndex);
         }
     }
-    printf("NO PATH\n");
+    sprintf(shortestDistanceString, "NO PATH");
 }
 
 //Function for handling key presses
@@ -307,6 +342,8 @@ int main(int argc, char** argv) {
     update(0);
 
     glClearColor(1.0, 1.0, 1.0, 0.0);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
     gluOrtho2D(0.0, WIDTH, 0.0, HEIGHT);
 
     init();
