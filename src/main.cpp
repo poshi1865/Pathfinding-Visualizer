@@ -4,6 +4,7 @@
 #include <queue>
 #include <GL/glut.h>
 #include <GL/glu.h>
+#include <algorithm>
 
 #include "../include/Node.h"
 #include "../include/SpriteSheet.h"
@@ -152,7 +153,6 @@ void algo() {
         testCounter++;
         Node temp = nodeQueue.front();
         nodeQueue.pop();
-        //std::cout << temp.getCellNumber() << std::endl;
         int distanceOfTemp = temp.getDistanceFromSource();
 
         if (temp.getType() == NODE_VISITED || temp.getType() == NODE_SOURCE) {
@@ -161,12 +161,14 @@ void algo() {
 
             //for  all adjacent unvisited nodes of temp set distance=distanceOfTemp+1
             for (int i = 0; i < 4; i++) {
-                if (node[*adjacentOfTempIndex].getType() == NODE_VISITED) {
+                if (node[*adjacentOfTempIndex].getType() == NODE_VISITED || node[*adjacentOfTempIndex].getType() == NODE_BOUNDARY || node[*adjacentOfTempIndex].getType() == NODE_WALL) {
                     adjacentOfTempIndex++;
                     continue;
                 }
                 //Set node to visited and distance of node from source
-                node[*adjacentOfTempIndex].setType(NODE_VISITED);
+                if (node[*adjacentOfTempIndex].getType() != NODE_SOURCE && node[*adjacentOfTempIndex].getType() != NODE_DESTINATION) {
+                    node[*adjacentOfTempIndex].setType(NODE_VISITED);
+                }
                 node[*adjacentOfTempIndex].setDistanceFromSource(distanceOfTemp + 1);
 
                 //Push into queue and render
@@ -176,6 +178,60 @@ void algo() {
                 //Check if destination node has been reached 
                 if (node[*adjacentOfTempIndex].getCellNumber() == destinationNode->getCellNumber()) {
                     printf("Shortest distance from source to destination: %d\n", node[*adjacentOfTempIndex].getDistanceFromSource());
+                    
+                    //TRACING BACK THE PATH
+                    int shortestPathIndex = *adjacentOfTempIndex;
+                    for (int i = 0; i < node[*adjacentOfTempIndex].getDistanceFromSource() - 1; i++) {
+
+                        //get adjacent nodes
+                        int* adjacentNodes = node[shortestPathIndex].getAdjacentNodeIndex();
+
+                        //get least distance 
+                        int smallestDistance = INFINITY;
+                        for (int i = 0; i < 4; i++) {
+                            if (node[*adjacentNodes].getDistanceFromSource() <= smallestDistance) {
+                                if (node[*adjacentNodes].getType() == NODE_VISITED) {
+                                    smallestDistance = node[*adjacentNodes].getDistanceFromSource();
+                                }
+                            }
+                            adjacentNodes += 1;
+                        }
+                        //reset adjacentNodes
+                        adjacentNodes -= 4;
+
+                        //get index of node with smallest distance
+                        int indexOfNodeSmallestDistance;
+                        if (node[*adjacentNodes].getDistanceFromSource() == smallestDistance) {
+                            if (node[*adjacentNodes].getType() == NODE_VISITED)
+                                indexOfNodeSmallestDistance = node[*adjacentNodes].getCellNumber();
+                        }
+
+                        else if (node[*(adjacentNodes + 1)].getDistanceFromSource() == smallestDistance) {
+                            if (node[*(adjacentNodes + 1)].getType() == NODE_VISITED)
+                                indexOfNodeSmallestDistance = node[*(adjacentNodes+1)].getCellNumber();
+                        }
+
+                        else if (node[*(adjacentNodes + 2)].getDistanceFromSource() == smallestDistance) {
+                            if (node[*(adjacentNodes + 2)].getType() == NODE_VISITED)
+                                indexOfNodeSmallestDistance = node[*(adjacentNodes + 2)].getCellNumber();
+                        }
+
+                        else if (node[*(adjacentNodes + 3)].getDistanceFromSource() == smallestDistance) {
+                            if (node[*(adjacentNodes + 3)].getType() == NODE_VISITED)
+                                indexOfNodeSmallestDistance = node[*(adjacentNodes + 3)].getCellNumber();
+                        }
+
+                        shortestPathIndex = indexOfNodeSmallestDistance;
+                        printf("SPI: %d\n", shortestPathIndex);
+
+                        //set type of node with smallest distance value as trace
+                        node[shortestPathIndex].setType(NODE_TRACE);
+                        usleep(10000);
+                        render();
+
+                        free(adjacentNodes);
+                    }
+
                     return;
                 }
 
@@ -185,8 +241,8 @@ void algo() {
 
             free(startOfAdjacentIndex);
         }
-        printf("Test counter: %d\n", testCounter);
     }
+    printf("NO PATH\n");
 }
 
 //Function for handling key presses

@@ -10,5 +10,6 @@ GLfloat COLOR_RED[] = {1.0, 0.0, 0.0};
 GLfloat COLOR_GREEN[] = {0.0, 1.0, 0.0};
 GLfloat COLOR_BLUE[] = {0.0, 0.0, 1.0};
 GLfloat COLOR_BROWN[] = {0.588, 0.294, 0.0};
+GLfloat COLOR_YELLOW[] = {1.0, 1.0, 0.0};
 
 #endif

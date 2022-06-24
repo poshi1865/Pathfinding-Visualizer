@@ -46,7 +46,7 @@ bool Node::hasInside(int x, int y) {
 }
 
 void Node::setType(int type) {
-    if (type == NODE_NORMAL ||  type == NODE_WALL || type == NODE_SOURCE || type == NODE_DESTINATION || type == NODE_VISITED || type == NODE_BOUNDARY) {
+    if (type == NODE_NORMAL ||  type == NODE_WALL || type == NODE_SOURCE || type == NODE_DESTINATION || type == NODE_VISITED || type == NODE_BOUNDARY || type == NODE_TRACE) {
         this->type = type;
 
         if (this->type == NODE_NORMAL) {
@@ -66,6 +66,9 @@ void Node::setType(int type) {
         }
         else if (this->type == NODE_BOUNDARY) {
             this->color = COLOR_BLACK;
+        }
+        else if (this->type == NODE_TRACE) {
+            this->color = COLOR_YELLOW;
         }
     }
 }

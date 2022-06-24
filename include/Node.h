@@ -12,6 +12,7 @@
 #define NODE_DESTINATION 4
 #define NODE_VISITED 5
 #define NODE_BOUNDARY 6
+#define NODE_TRACE 7
 
 class Node {
     private:
