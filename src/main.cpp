@@ -9,7 +9,7 @@
 #include <algorithm>
 
 #include "../include/Node.hpp"
-#include "../include/SpriteSheet.hpp"
+//#include "../include/SpriteSheet.hpp"
 
 #define MOUSE_LEFT 1
 #define MOUSE_RIGHT 2
