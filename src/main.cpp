@@ -147,14 +147,15 @@ void algo() {
     //Push start node on queue
     nodeQueue.push(*sourceNode);
 
+    int testCounter = 0;
     while(!nodeQueue.empty()) {
+        testCounter++;
         Node temp = nodeQueue.front();
         nodeQueue.pop();
         //std::cout << temp.getCellNumber() << std::endl;
         int distanceOfTemp = temp.getDistanceFromSource();
 
-        if (temp.getType() != NODE_VISITED) {
-            temp.setType(NODE_VISITED);
+        if (temp.getType() == NODE_VISITED || temp.getType() == NODE_SOURCE) {
             int* adjacentOfTempIndex = temp.getAdjacentNodeIndex();
             int* startOfAdjacentIndex = adjacentOfTempIndex;
 
@@ -168,22 +169,23 @@ void algo() {
                 node[*adjacentOfTempIndex].setType(NODE_VISITED);
                 node[*adjacentOfTempIndex].setDistanceFromSource(distanceOfTemp + 1);
 
-                std::cout << "adjacent cell: " << *adjacentOfTempIndex << std::endl;
                 //Push into queue and render
                 nodeQueue.push(node[*adjacentOfTempIndex]);
                 render();
 
-                //Go to the next adjacent node
-                adjacentOfTempIndex++;
-
                 //Check if destination node has been reached 
                 if (node[*adjacentOfTempIndex].getCellNumber() == destinationNode->getCellNumber()) {
-                    printf("Shortest distance: %d\n", distanceOfTemp);
+                    printf("Shortest distance from source to destination: %d\n", node[*adjacentOfTempIndex].getDistanceFromSource());
                     return;
                 }
+
+                //Go to the next adjacent node
+                adjacentOfTempIndex++;
             }
+
             free(startOfAdjacentIndex);
         }
+        printf("Test counter: %d\n", testCounter);
     }
 }
 
