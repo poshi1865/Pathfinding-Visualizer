@@ -1,6 +1,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <stdio.h>
+#include <queue>
 #include <GL/glut.h>
 #include <GL/glu.h>
 
@@ -15,6 +16,8 @@
 #define KEY_R 'r'
 #define KEY_A 'a'
 #define KEY_T 't'
+
+#define INFINITY INT16_MAX
 
 void render(void);
 void resize(int width, int height);
@@ -126,33 +129,62 @@ void handleMouseClick(int button, int state, int x, int y) {
 void algo() {
     if (sourceNode == nullptr || destinationNode == nullptr) return;
 
-    int newSourceIndex;
-    while (!destinationNode->isVisited()) {
-        int *adjacentNodeIndex = sourceNode->getAdjacentNodeIndex();
-        for (int i = 0; i < 4; i++) {
-            //if (*adjacentNodeIndex < 1 || *adjacentNodeIndex > 1024) return;
-            //node[*adjacentNodeI].setType(NODE_VISITED);
-            if (node[*adjacentNodeIndex].getType() == NODE_NORMAL) {
-                node[*adjacentNodeIndex].setType(NODE_VISITED);
-            }
-            newSourceIndex = *adjacentNodeIndex;
-            adjacentNodeIndex++;
+    std::queue<Node> nodeQueue;
+    //BREADTH FIRST 
+    //Set distance of all nodes to infinity
+    for (int i = 1; i < numberOfNodes; i++) {
+        if (node[i].getType() == NODE_NORMAL) {
+            node[i].setDistanceFromSource(INFINITY);
         }
-        sourceNode = &node[newSourceIndex];
-        render();
     }
-    //while (currNode != destinationNode) {
-    //    for (int i = 0; i < numberOfNodes; i++) {
-    //        if (abs(currNode->getCellNumber() - node[i].getCellNumber()) == 32) { 
-    //            if (node[i].getType() == NODE_VISITED) continue;
-    //            node[i].setType(NODE_VISITED);
-    //            currNode = &node[i];
 
-    //            //call render function to draw all nodes
-    //            render();
-    //        }
-    //    }
-    //}
+    //Set distance value of start node to 0
+    sourceNode->setDistanceFromSource(0);
+
+    //If start node is the end node, return 
+    if (sourceNode == destinationNode) return;
+    
+    //Push start node on queue
+    nodeQueue.push(*sourceNode);
+
+    while(!nodeQueue.empty()) {
+        Node temp = nodeQueue.front();
+        nodeQueue.pop();
+        //std::cout << temp.getCellNumber() << std::endl;
+        int distanceOfTemp = temp.getDistanceFromSource();
+
+        if (temp.getType() != NODE_VISITED) {
+            temp.setType(NODE_VISITED);
+            int* adjacentOfTempIndex = temp.getAdjacentNodeIndex();
+            int* startOfAdjacentIndex = adjacentOfTempIndex;
+
+            //for  all adjacent unvisited nodes of temp set distance=distanceOfTemp+1
+            for (int i = 0; i < 4; i++) {
+                if (node[*adjacentOfTempIndex].getType() == NODE_VISITED) {
+                    adjacentOfTempIndex++;
+                    continue;
+                }
+                //Set node to visited and distance of node from source
+                node[*adjacentOfTempIndex].setType(NODE_VISITED);
+                node[*adjacentOfTempIndex].setDistanceFromSource(distanceOfTemp + 1);
+
+                std::cout << "adjacent cell: " << *adjacentOfTempIndex << std::endl;
+                //Push into queue and render
+                nodeQueue.push(node[*adjacentOfTempIndex]);
+                render();
+
+                //Go to the next adjacent node
+                adjacentOfTempIndex++;
+
+                //Check if destination node has been reached 
+                if (node[*adjacentOfTempIndex].getCellNumber() == destinationNode->getCellNumber()) {
+                    printf("Shortest distance: %d\n", distanceOfTemp);
+                    return;
+                }
+            }
+            free(startOfAdjacentIndex);
+        }
+    }
 }
 
 //Function for handling key presses
@@ -187,11 +219,11 @@ void handleKeyboardPress(unsigned char key, int x, int y) {
         }
     }
     
-    if (key == KEY_A) {
+    else if (key == KEY_A) {
         algo();
     }
     
-    if (key == KEY_T) {
+    else if (key == KEY_T) {
         printf("T PRESSED\n");
     }
 }
