@@ -1,9 +1,8 @@
 A pathfinding algorithm visualizer written in C++ using only GLUT. The following videos have been sped up 3X.
 
 
-https://user-images.githubusercontent.com/63964405/175766626-c1c8a6d4-5c12-498d-86de-63ea0b0152c5.mp4
+![path1](https://user-images.githubusercontent.com/63964405/175766851-26355560-74fd-4d90-adc6-29541cbd4bb9.gif)
 
-https://user-images.githubusercontent.com/63964405/175766667-09146886-ebc2-4344-858c-e98087a477f7.mp4
+![path2](https://user-images.githubusercontent.com/63964405/175766858-524f021f-20a6-426d-8fd6-68b80b2270c4.gif)
 
-https://user-images.githubusercontent.com/63964405/175766669-0e902f1d-3564-4a79-b4a0-e1571bc58907.mp4
-
+![path3](https://user-images.githubusercontent.com/63964405/175766861-928c1e8b-f17e-4f32-8d14-c72ff5a13670.gif)
