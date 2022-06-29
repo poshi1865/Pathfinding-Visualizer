@@ -29,6 +29,7 @@ void handleMouseClick(int button, int state, int x, int y);
 void handleKeyboardPress(unsigned char key, int x, int y);
 void update(int a);
 void init();
+void trace_back_path(int *adjacentOfTempIndex);
 
 //THERE IS A DIFFERENCE OF 42 b/w node and its adjacent node on top and bottom
 
@@ -160,7 +161,7 @@ void handleMouseClick(int button, int state, int x, int y) {
 }
 
 //ALGORITHM
-void algo() {
+void start_breadth_first_search() {
     if (sourceNode == nullptr || destinationNode == nullptr) return;
 
     std::queue<Node> nodeQueue;
@@ -214,62 +215,9 @@ void algo() {
                     glColor3f(0.0f, 0.3f, 1.0f);
                     
                     sprintf(shortestDistanceString, "Shortest distance from source to destination: %d", node[*adjacentOfTempIndex].getDistanceFromSource());
-                    //************TRACING BACK THE PATH*****************
-                    int shortestPathIndex = *adjacentOfTempIndex;
-                    for (int i = 0; i < node[*adjacentOfTempIndex].getDistanceFromSource() - 1; i++) {
-
-                        //get adjacent nodes
-                        int* adjacentNodes = node[shortestPathIndex].getAdjacentNodeIndex();
-
-                        //get least distance 
-                        int smallestDistance = INFINITY;
-                        for (int i = 0; i < 4; i++) {
-                            if (node[*adjacentNodes].getDistanceFromSource() <= smallestDistance) {
-                                if (node[*adjacentNodes].getType() == NODE_VISITED) {
-                                    smallestDistance = node[*adjacentNodes].getDistanceFromSource();
-                                }
-                            }
-                            adjacentNodes += 1;
-                        }
-                        //reset adjacentNodes
-                        adjacentNodes -= 4;
-
-                        //get index of node with smallest distance
-                        int indexOfNodeSmallestDistance;
-                        if (node[*adjacentNodes].getDistanceFromSource() == smallestDistance) {
-                            if (node[*adjacentNodes].getType() == NODE_VISITED)
-                                indexOfNodeSmallestDistance = node[*adjacentNodes].getCellNumber();
-                        }
-
-                        else if (node[*(adjacentNodes + 1)].getDistanceFromSource() == smallestDistance) {
-                            if (node[*(adjacentNodes + 1)].getType() == NODE_VISITED)
-                                indexOfNodeSmallestDistance = node[*(adjacentNodes+1)].getCellNumber();
-                        }
-
-                        else if (node[*(adjacentNodes + 2)].getDistanceFromSource() == smallestDistance) {
-                            if (node[*(adjacentNodes + 2)].getType() == NODE_VISITED)
-                                indexOfNodeSmallestDistance = node[*(adjacentNodes + 2)].getCellNumber();
-                        }
-
-                        else if (node[*(adjacentNodes + 3)].getDistanceFromSource() == smallestDistance) {
-                            if (node[*(adjacentNodes + 3)].getType() == NODE_VISITED)
-                                indexOfNodeSmallestDistance = node[*(adjacentNodes + 3)].getCellNumber();
-                        }
-
-                        shortestPathIndex = indexOfNodeSmallestDistance;
-                        //printf("SPI: %d\n", shortestPathIndex);
-
-                        //set type of node with smallest distance value as trace
-                        node[shortestPathIndex].setType(NODE_TRACE);
-                        usleep(10000);
-                        render();
-
-                        free(adjacentNodes);
-                    }
-
+                    trace_back_path(adjacentOfTempIndex);
                     return;
                 }
-
                 //Go to the next adjacent node
                 adjacentOfTempIndex++;
             }
@@ -277,7 +225,62 @@ void algo() {
             free(startOfAdjacentIndex);
         }
     }
+    //Set shortestDistanceString to "NO PATH" for displaying to user
     sprintf(shortestDistanceString, "NO PATH");
+}
+
+void trace_back_path(int* adjacentOfTempIndex) {
+    int shortestPathIndex = *adjacentOfTempIndex;
+    for (int i = 0; i < node[*adjacentOfTempIndex].getDistanceFromSource() - 1; i++) {
+
+        //get adjacent nodes
+        int* adjacentNodes = node[shortestPathIndex].getAdjacentNodeIndex();
+
+        //get least distance 
+        int smallestDistance = INFINITY;
+        for (int i = 0; i < 4; i++) {
+            if (node[*adjacentNodes].getDistanceFromSource() <= smallestDistance) {
+                if (node[*adjacentNodes].getType() == NODE_VISITED) {
+                    smallestDistance = node[*adjacentNodes].getDistanceFromSource();
+                }
+            }
+            adjacentNodes += 1;
+        }
+        //reset adjacentNodes
+        adjacentNodes -= 4;
+
+        //get index of node with smallest distance
+        int indexOfNodeSmallestDistance;
+        if (node[*adjacentNodes].getDistanceFromSource() == smallestDistance) {
+            if (node[*adjacentNodes].getType() == NODE_VISITED)
+                indexOfNodeSmallestDistance = node[*adjacentNodes].getCellNumber();
+        }
+
+        else if (node[*(adjacentNodes + 1)].getDistanceFromSource() == smallestDistance) {
+            if (node[*(adjacentNodes + 1)].getType() == NODE_VISITED)
+                indexOfNodeSmallestDistance = node[*(adjacentNodes+1)].getCellNumber();
+        }
+
+        else if (node[*(adjacentNodes + 2)].getDistanceFromSource() == smallestDistance) {
+            if (node[*(adjacentNodes + 2)].getType() == NODE_VISITED)
+                indexOfNodeSmallestDistance = node[*(adjacentNodes + 2)].getCellNumber();
+        }
+
+        else if (node[*(adjacentNodes + 3)].getDistanceFromSource() == smallestDistance) {
+            if (node[*(adjacentNodes + 3)].getType() == NODE_VISITED)
+                indexOfNodeSmallestDistance = node[*(adjacentNodes + 3)].getCellNumber();
+        }
+
+        shortestPathIndex = indexOfNodeSmallestDistance;
+
+        //set type of node with smallest distance value as trace
+        node[shortestPathIndex].setType(NODE_TRACE);
+        usleep(10000);
+        render();
+
+        free(adjacentNodes);
+    }
+
 }
 
 //Function for handling key presses
@@ -313,7 +316,7 @@ void handleKeyboardPress(unsigned char key, int x, int y) {
     }
     
     else if (key == KEY_A) {
-        algo();
+        start_breadth_first_search();
     }
     
     else if (key == KEY_T) {
