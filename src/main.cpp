@@ -124,7 +124,8 @@ void update(int a) {
         for (int i = 0; i < numberOfNodes; i++) {
             if (node[i].hasInside(mouseX, mouseY) && !node[i].isBoundary()) {
                 if (mouseClick == MOUSE_LEFT) {
-                    printf("%d\n", i);
+                    printf("x: %d\n", node[i].getX());
+                    printf("y: %d\n", node[i].getY());
                     node[i].setType(NODE_WALL);
                 }
                 else if (mouseClick == MOUSE_RIGHT) {
@@ -160,6 +161,87 @@ void handleMouseClick(int button, int state, int x, int y) {
     }
 }
 
+//Heuristic for A* search
+int calculate_manhattan_distance(Node& current, Node* dest) {
+    return (abs(current.getX() - dest->getX()) + abs(current.getY() - dest->getY()));
+}
+
+void a_star_search() {
+    if (sourceNode == nullptr || destinationNode == nullptr) return;
+
+    std::queue<Node> nodeQueue;
+    //Set distance of all nodes to infinity
+    for (int i = 1; i < numberOfNodes; i++) {
+        if (node[i].getType() == NODE_NORMAL) {
+            node[i].setDistanceFromSource(INFINITY);
+        }
+    }
+
+    //Set distance value of start node to 0
+    sourceNode->setDistanceFromSource(0);
+
+    //If start node is the end node, return 
+    if (sourceNode == destinationNode) return;
+    
+    //Push start node on queue
+    nodeQueue.push(*sourceNode);
+    Node temp = *sourceNode;
+
+    while(!nodeQueue.empty()) {
+        nodeQueue.pop();
+        int distanceOfTemp = temp.getDistanceFromSource();
+
+        if (temp.getType() == NODE_VISITED || temp.getType() == NODE_SOURCE) {
+            int* adjacentOfTempIndex = temp.getAdjacentNodeIndex();
+            int* startOfAdjacentIndex = adjacentOfTempIndex;
+
+            //variables for calculating path to take
+            //Go through all adjacent nodes and find the one with smallest f
+            Node* selectedNode;
+            int f = INFINITY;
+            for (int i = 0; i < 4; i++) {
+                if (node[*adjacentOfTempIndex].getType() == NODE_VISITED || node[*adjacentOfTempIndex].getType() == NODE_BOUNDARY || node[*adjacentOfTempIndex].getType() == NODE_WALL) {
+                    adjacentOfTempIndex++;
+                    continue;
+                }
+                //Set node to visited and distance of node from source
+                node[*adjacentOfTempIndex].setDistanceFromSource(distanceOfTemp + 1);
+                if (node[*adjacentOfTempIndex].getType() != NODE_SOURCE && node[*adjacentOfTempIndex].getType() != NODE_DESTINATION) {
+                    //Set distance from source
+
+                    //calculate heuristic
+                    int tempHeuristic = calculate_manhattan_distance(node[*adjacentOfTempIndex], destinationNode);
+                    if (tempHeuristic + node[*adjacentOfTempIndex].getDistanceFromSource() < f) {
+                        f = tempHeuristic + node[*adjacentOfTempIndex].getDistanceFromSource();
+                        selectedNode = &node[*adjacentOfTempIndex];
+                    }
+                }
+
+                //Check if destination node has been reached 
+                if (node[*adjacentOfTempIndex].getCellNumber() == destinationNode->getCellNumber()) {
+                    printf("Shortest distance from source to destination: %d\n", node[*adjacentOfTempIndex].getDistanceFromSource());
+                    glColor3f(0.0f, 0.3f, 1.0f);
+                    
+                    sprintf(shortestDistanceString, "Shortest distance from source to destination: %d", node[*adjacentOfTempIndex].getDistanceFromSource());
+                    //TRACE BACK THE PATH
+                    trace_back_path(adjacentOfTempIndex);
+                    return;
+                }
+                //set node with lowest f as visited node 
+                selectedNode->setType(NODE_VISITED);
+                temp = *selectedNode;
+                nodeQueue.push(*selectedNode);
+                render();
+                //Go to the next adjacent node
+                adjacentOfTempIndex++;
+            }
+            free(startOfAdjacentIndex);
+        }
+    }
+    //Set shortestDistanceString to "NO PATH" for displaying to user
+    sprintf(shortestDistanceString, "NO PATH");
+}
+
 //ALGORITHM
 void start_breadth_first_search() {
     if (sourceNode == nullptr || destinationNode == nullptr) return;
@@ -182,9 +264,7 @@ void start_breadth_first_search() {
     //Push start node on queue
     nodeQueue.push(*sourceNode);
 
-    int testCounter = 0;
     while(!nodeQueue.empty()) {
-        testCounter++;
         Node temp = nodeQueue.front();
         nodeQueue.pop();
         int distanceOfTemp = temp.getDistanceFromSource();
@@ -215,13 +295,13 @@ void start_breadth_first_search() {
                     glColor3f(0.0f, 0.3f, 1.0f);
                     
                     sprintf(shortestDistanceString, "Shortest distance from source to destination: %d", node[*adjacentOfTempIndex].getDistanceFromSource());
+                    //TRACE BACK THE PATH
                     trace_back_path(adjacentOfTempIndex);
                     return;
                 }
                 //Go to the next adjacent node
                 adjacentOfTempIndex++;
             }
-
             free(startOfAdjacentIndex);
         }
     }
@@ -316,7 +396,7 @@ void handleKeyboardPress(unsigned char key, int x, int y) {
     }
     
     else if (key == KEY_A) {
-        start_breadth_first_search();
+        a_star_search();
     }
     
     else if (key == KEY_T) {

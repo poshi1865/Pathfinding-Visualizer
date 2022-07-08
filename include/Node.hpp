@@ -43,6 +43,8 @@ class Node {
         void setDistanceFromSource(int n); 
         int getDistanceFromSource();
         bool isBoundary();
+        int getX();
+        int getY();
 };
 
 #endif

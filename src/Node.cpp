@@ -2,6 +2,7 @@
 #include <string>
 #include "../include/screen.hpp"
 #include "../include/colors.hpp"
+#include <cmath>
 
 Node::Node() {
 }
@@ -139,4 +140,12 @@ bool Node::isBoundary() {
         return true;
     }
     return false;
+}
+
+int Node::getX() {
+    return ceil(x/31);
+}
+
+int Node::getY() {
+    return ceil(y/31);
 }
